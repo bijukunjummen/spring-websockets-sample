@@ -1,0 +1,6 @@
+[submodule "projects/spring-websocket-test"]
+	path = projects/spring-websocket-test
+	url = https://github.com/rstoyanchev/spring-websocket-test
+[submodule "projects/spring-websocket-portfolio"]
+	path = projects/spring-websocket-portfolio
+	url = https://github.com/rstoyanchev/spring-websocket-portfolio.git

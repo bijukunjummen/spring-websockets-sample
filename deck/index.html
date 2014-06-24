@@ -37,6 +37,16 @@
 					<h1>Spring Websockets</h1>
 				</section>
 				<section>
+					<h2>Disclaimer!!</h2>
+					<br/>Content heavily copied from the followed sources:
+					<ul>
+						<li>http://www.slideshare.net/sergialmar/websockets-with-spring-4</li>
+						<li>https://github.com/rstoyanchev/spring-websocket-portfolio</li>
+						<li>Intro to Websocket applications with Spring Framework 4.0 - https://spring.io/blog/2014/01/21/springone2gx-2013-replay-intro-to-websocket-applications-with-spring-framework-4-0</li>
+						<li>Building Websocket broser apps with Spring: http://spring.io/blog/2013/10/23/webinar-replay-building-websocket-browser-applications-with-spring</li>
+					</ul>					
+				</section>				
+				<section>
 					<h2>WebSocket</h2>
 					<br>
 					<h3>"mechanism for browser-based applications...</h3>
@@ -47,24 +57,223 @@
 					</br>					
 				</section>
 				<section>
-					<h2>A Few (False) Expectations</h2>
+					<h2>WebSocket</h2>
 					<ul>
-						<li>It's standard, it's supported everywhere</li>
-						<li>It's a replacement for Ajax/Comet</li>
-						<li>I know web apps, how different can this be?</li>
-						<li>I will program to a WebSocket API</li>
-					</ul>					
-				</section>
+						<li>A thin layer on top of raw TCP</li>
+						<li>Full Duplex, stateful connnection., stays open for an entire session</li>
+						<li>Stream of messages, not just raw bytes</li>
+						<li>Uses port 80, uses http for initial handshake</li>
+					</ul>		
+				</section>				
 				<section>
 					<h2>Reality!</h2>
 					<ul>
-						<li>Not supported in IE &lt; 10</li>
+						<li>Not supported in IE &lt; 10 - http://caniuse.com/websockets</li>
 						<li>Issues with proxies</li>
-						<li>Not a replacement for Ajax/comet</li>
+						<li>Not a replacement for Ajax/polling/long polling/comet</li>
 						<li>Socket is very low level to work on</li>
 						<li>Requires Messaging/Event driven architecture</li>
 					</ul>					
-				</section>				
+				</section>	
+				<section>
+					<h2>When to use it</h2>
+					<br/>
+					Low latency, high frequency of messages between client and server
+					<ul>
+						<li>Collaboration/Chat, Google docs</li>
+						<li>Games</li>
+						<li>Financial trading applications</li>
+					</ul>	
+					<br/>				
+					Otherwise, chose polling/long polling/comet
+					<br/>
+					<ul>
+						<li>Latest Story, latest tweet</li>
+					</ul>	
+				</section>
+				<section>
+					<pre>
+						<code class="java">
+	HANDSHAKE REQUEST
+
+	GET /mychat HTTP/1.1
+	Host: server.example.com
+	Upgrade: websocket
+	Connection: Upgrade
+	Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==
+	Sec-WebSocket-Protocol: chat
+	Sec-WebSocket-Version: 13
+	Origin: http://example.com
+						</code>
+					</pre>
+				</section>	
+				<section>
+					<pre>
+						<code class="java">
+	HANDSHAKE RESPONSE
+
+	HTTP / 1.1 101 Switching Protocols
+	Upgrade: websocket
+	Connection: Upgrade
+	Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
+	Sec-WebSocket-Protocol: chat
+						</code>
+					</pre>
+				</section>	
+				<section>
+					<h2>Typical API Lifecycle Events</h2>
+<ul>
+<li>open - session established</li>
+<li>message - new messages received</li>
+<li>error - transport error</li>
+<li>close - session closed</li>
+<ul>
+<br/>
+Symmetrical on the client and server sides					
+				</section>
+				<section>
+							<h2>Java API for WebSocket  - JSR-356</h2>
+
+<ul>
+<li>Tomcat 7.0.47+</li> 
+<li>Jetty 9.1+</li>
+<li>Glassfish 4 with Tyrus WebSocket engine</li>
+<li>Wildfly 8.0+</li>
+</ul>
+				</section>																
+				
+				<section>
+<h3>Sockjs</h3>
+<ul>
+<li>Emulate WebSocket API as close as possible</li>
+<li>At least one streaming protocol per major browser</li>
+<li>Polling in old browsers, hosts behind restrictive proxies</li>
+</ul>
+				</section>	
+				<section>
+						<h3>Sockjs URL Scheme</h3>
+						<ul>
+    <li>GET  /echo</li>
+    <li>GET  /echo/info</li>
+    <li>POST /echo/**server**/**session**/**transport**</li>
+						</ul>
+				</section>		
+	
+<section>
+<h3>WebSocket API - Very Low Level</h3>
+<li>Single WebSocket connection per client
+results in single @ServerEndpoint per application</li>
+<li>limits you to one annotated class</li>
+<li>Not the right level of abstraction--
+much like plain Servlet is too course-grained</li>
+</section>
+<section>
+<h3>Raw WebSocket</h3>
+<li>A message is a blank page--
+you can write anything (custom format?)</li>
+<li>Can't provide useful annotations--
+How to broadcast to some subset of users?</li>	
+</section>																									
+<section>
+<h3>Spring's WebSocket API</h3>
+<ul>
+<li>Abstraction over WebSocket runtimes, Including JSR-356 containers, but not limited to it-</li>
+<li>Supports transparent fallback options based on SockJS protocol</li>
+<li>STOMP sub-protocol support</li>
+<li>Abstractions for building messaging architectures--
+Message, MessageChannel, MessageHandler</li>
+</ul>
+</section>
+<section>
+<h3>STOMP Protocol</h3>
+<ul>
+<li>Simple protocol for asynchronous message passing</li>
+<li>Originally for scripting languages (Ruby, Python)</li>
+<li>Supported by message brokers </li>
+<li>Suited for use on the web </li>
+<li>Frames modelled on HTTP	</li>
+</ul>
+</section>
+<section>
+	<h3>Stomp frame content
+<pre>
+<code class="java">
+COMMAND
+header1:value1
+header2:value2
+
+body^@
+</code>
+</pre>
+</section>
+<section>
+<h3>Client-to-Server Commands</h3>
+<li>SEND</li>
+<li>SUBSCRIBE</li>
+<li>UNSUBSCRIBE</li>	
+</section>
+<section>
+<h3>Server-to-Client Commands</h3>
+
+<li>MESSAGE</li>
+<li>ERROR</li>
+<li>RECEIPT</li>
+<li>ACK</li>
+<li>NACK</li>
+</section>
+<section>
+<h3>Sample client to server communication</h3>
+<pre>
+<code class="java">
+SEND
+destination: /queue/trade
+content-type: application/json
+content-length: 46
+
+{"action":"Buy","ticker":"CIS", "shares":"44"}^@
+
+</code>
+</pre>
+</section>
+<section>
+<h3>Client Consumes a message(1)</h3>
+<pre>
+<code class="java">
+SUBSCRIBE
+id:sub-1
+destination: /topic/price.stock.*
+
+^@
+
+</code>
+</pre>
+</section>
+<section>
+<h3>Client Consumes a message(1)</h3>
+<pre>
+<code class="java">
+MESSAGE
+message-id:kdaldj
+subscription:sub-1
+destination:/topic/price.stock.CIS
+
+{"ticker":"CIS","price":"24"}^@
+
+</code>
+</pre>
+</section>
+<section>
+<h3>STOMP vs Raw Websockets</h3>
+<ul>
+<li>Standard message format</li>
+<li>Browser client support (e.g. stomp.js, msgs.js)</li>
+<li>Common messaging patterns</li>
+<li>Ability to incorporate (full-featured) message broker</li>
+</ul>
+</section>
+<section>
+<img src="architecture-stomp-relay.png">
+</section>
 				<section>
 					<h3>References</h3>
 					<ul>

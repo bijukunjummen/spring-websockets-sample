@@ -1,4 +1,4 @@
-package bk.tailfile.config;
+package bk.chat.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -12,12 +12,12 @@ public class WebSocketDefaultConfig extends AbstractWebSocketMessageBrokerConfig
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableStompBrokerRelay("/topic/", "/queue/");
+		config.enableStompBrokerRelay("/queue", "/topic/");
 		config.setApplicationDestinationPrefixes("/app");
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/tailfilesep").withSockJS();
+		registry.addEndpoint("/chat").withSockJS();
 	}
 }
