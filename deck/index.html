@@ -35,6 +35,10 @@
 			<div class="slides">
 				<section>
 					<h1>Spring Websockets</h1>
+					<br/><br/>
+					<p>
+						<small>Biju Kunjummen</small>
+					</p>
 				</section>
 				<section>
 					<h2>Disclaimer!!</h2>
@@ -43,12 +47,15 @@
 						<li>http://www.slideshare.net/sergialmar/websockets-with-spring-4</li>
 						<li>https://github.com/rstoyanchev/spring-websocket-portfolio</li>
 						<li>Intro to Websocket applications with Spring Framework 4.0 - https://spring.io/blog/2014/01/21/springone2gx-2013-replay-intro-to-websocket-applications-with-spring-framework-4-0</li>
-						<li>Building Websocket broser apps with Spring: http://spring.io/blog/2013/10/23/webinar-replay-building-websocket-browser-applications-with-spring</li>
+						<li>Building Websocket browser apps with Spring: http://spring.io/blog/2013/10/23/webinar-replay-building-websocket-browser-applications-with-spring</li>
 					</ul>					
 				</section>				
 				<section>
 					<h2>WebSocket</h2>
-					<br>
+					<br/>
+					demo: hello-world, tail-file
+
+					<br/>
 					<h3>"mechanism for browser-based applications...</h3>
 					<h3>two-way communication with servers...</h3>
 					<h3>does not rely on multiple HTTP connections"</h3>
@@ -122,6 +129,7 @@
 				</section>	
 				<section>
 					<h2>Typical API Lifecycle Events</h2>
+					<br/>demo:spring-websocket-test<br/>
 <ul>
 <li>open - session established</li>
 <li>message - new messages received</li>
@@ -152,6 +160,7 @@ Symmetrical on the client and server sides
 				</section>	
 				<section>
 						<h3>Sockjs URL Scheme</h3>
+						<br/>demo: spring-websocket-test
 						<ul>
     <li>GET  /echo</li>
     <li>GET  /echo/info</li>
@@ -169,6 +178,7 @@ much like plain Servlet is too course-grained</li>
 </section>
 <section>
 <h3>Raw WebSocket</h3>
+<br/>demo: spring-websocket-portfolio
 <li>A message is a blank page--
 you can write anything (custom format?)</li>
 <li>Can't provide useful annotations--
@@ -264,12 +274,78 @@ destination:/topic/price.stock.CIS
 </section>
 <section>
 <h3>STOMP vs Raw Websockets</h3>
+<br/>demo: hello-world, sample-chat<br/>
 <ul>
 <li>Standard message format</li>
 <li>Browser client support (e.g. stomp.js, msgs.js)</li>
 <li>Common messaging patterns</li>
 <li>Ability to incorporate (full-featured) message broker</li>
 </ul>
+</section>
+<section>
+	<h3>Spring - Configuring for Websocket with STOMP/SOCKJS fallback support</h3>
+<pre>
+<code class="java">
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketDefaultConfig extends AbstractWebSocketMessageBrokerConfigurer {
+
+	@Override
+	public void configureMessageBroker(MessageBrokerRegistry config) {
+		config.enableStompBrokerRelay("/topic/");
+		config.setApplicationDestinationPrefixes("/app");
+	}
+
+	@Override
+	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		registry.addEndpoint("/helloworld").withSockJS();
+	}
+}
+</code>
+</pre>	
+</section>
+<section>
+	<h3>Spring - Sample servicing a request from the client</h3>
+<pre>
+<code class="java">
+@MessageMapping("/greetings")
+@SendTo("/topic/greetings")
+public String handleGreeting(@Payload String greeting) {
+	String message = "[" + getTimestamp() + "]:" + greeting;
+	oldMessages.add(message);
+	return message;
+}
+</code>
+</pre>	
+<pre>
+<code class="java">
+SEND
+destination:/app/greetings
+content-type:application/json
+content-length:11
+
+Hello world^@a
+</code>
+</pre>	
+</section>
+<section>
+	<h3>Spring - Subscribing to messages</h3>
+<pre>
+<code class="java">
+@SubscribeMapping("/oldmessages")
+public List<String> oldMessages() {
+	return Arrays.asList(oldMessages.toArray(new String[0]));
+}
+</code>
+</pre>	
+<pre>
+<code class="java">
+SUBSCRIBE
+destination:/app/oldmessages
+
+^@
+</code>
+</pre>	
 </section>
 <section>
 <img src="architecture-stomp-relay.png">
@@ -280,7 +356,7 @@ destination:/topic/price.stock.CIS
 						<li>http://www.slideshare.net/sergialmar/websockets-with-spring-4</li>
 						<li>https://github.com/rstoyanchev/spring-websocket-portfolio</li>
 						<li>Intro to Websocket applications with Spring Framework 4.0 - https://spring.io/blog/2014/01/21/springone2gx-2013-replay-intro-to-websocket-applications-with-spring-framework-4-0</li>
-						<li>Building Websocket broser apps with Spring: http://spring.io/blog/2013/10/23/webinar-replay-building-websocket-browser-applications-with-spring</li>
+						<li>Building Websocket browser apps with Spring: http://spring.io/blog/2013/10/23/webinar-replay-building-websocket-browser-applications-with-spring</li>
 					</ul>	
 				</section>
 
