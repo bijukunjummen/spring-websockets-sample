@@ -274,7 +274,6 @@ destination:/topic/price.stock.CIS
 </section>
 <section>
 <h3>STOMP vs Raw Websockets</h3>
-<br/>demo: hello-world, sample-chat<br/>
 <ul>
 <li>Standard message format</li>
 <li>Browser client support (e.g. stomp.js, msgs.js)</li>
@@ -330,10 +329,11 @@ Hello world^@a
 </section>
 <section>
 	<h3>Spring - Subscribing to messages</h3>
+<br/>demo: hello-world, sample-chat<br/>	
 <pre>
 <code class="java">
 @SubscribeMapping("/oldmessages")
-public List<String> oldMessages() {
+public List&lt;String&gt; oldMessages() {
 	return Arrays.asList(oldMessages.toArray(new String[0]));
 }
 </code>
