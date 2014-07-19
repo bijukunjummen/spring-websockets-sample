@@ -1,0 +1,13 @@
+= Spring Websockets sample - tailing a file
+
+This is an example application using http://docs.spring.io/spring/docs/current/spring-framework-reference/html/websocket.html[Spring Websockets support].
+
+It does something simple - tailing a file, you can see the tailed file through a simply tailing it from a terminal or on the Websocket based UI
+
+== Details:
+
+1.  Generating a sample file to tail: The application uses http://docs.spring.io/spring-integration/reference/htmlsingle/[Spring Integration] to write random quotes to a file.
+
+2. Tailing a file and sending contents to a Spring Websocket managed topic: This again is accomplished using Spring Integration 
+
+3. UI: UI is Angular js based, and uses https://github.com/sockjs[SockJS] with http://jmesnil.net/stomp-websocket/doc/[Stomp] as the message protocol to show the contents of the tailed file as new information flows through
