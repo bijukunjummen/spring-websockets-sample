@@ -43,10 +43,10 @@ tailFilesApp.controller("TailFilesCtrl", function ($scope) {
 
     $scope.initSockets = function() {
         $scope.socket={};
-        $scope.socket.client = new SockJS('/tailfilesep');
+        $scope.socket.client = new SockJS(URLS.tailFilesURL);  //new WebSocket('ws://' + window.location.host + URLS.tailFilesURL);
         $scope.socket.stomp = Stomp.over($scope.socket.client);
         $scope.socket.stomp.connect({}, function() {
-            $scope.socket.stomp.subscribe("/topic/tailfiles", $scope.notify);
+            $scope.socket.stomp.subscribe(URLS.tailFilesTopic, $scope.notify);
         });
         $scope.socket.client.onclose = $scope.reconnect;
     };

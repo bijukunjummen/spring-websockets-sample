@@ -8,6 +8,13 @@
     <script th:src="@{/webjars/angularjs/1.3.0-beta.11/angular.min.js}" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js" > </script>
     <script th:src="@{/js/sockjs-0.3.4.js}" src="../../static/js/sockjs-0.3.4.js"> </script>
     <script th:src="@{/js/stomp.js}" src="../../static/js/stomp.js"> </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var URLS = {};
+        URLS.tailFilesURL = /*[[@{/tailfilesep}]]*/ '/tailfilesep';
+        URLS.tailFilesTopic = /*[[@{/topic/tailfiles}]]*/ '/topic/tailfiles';
+        /*]]>*/
+    </script>
     <script  th:src="@{/js/tailfileapp.js}" src="../../static/js/talfileapp.js" > </script>
 </head>
 <body>
