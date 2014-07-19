@@ -10,7 +10,7 @@ public class TailController {
 
 	@RequestMapping("/home")
 	public String home(Model model) {
-		model.addAttribute("filename", System.getProperty("java.io.tmpdir") + "/test.txt");
+		model.addAttribute("filename", System.getProperty("java.io.tmpdir") + "quotes.txt");
 		return "files/home";
 	}
 

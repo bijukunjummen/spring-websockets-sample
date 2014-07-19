@@ -56,7 +56,7 @@ public class RandomQuoteGenerator {
 			"We can easily forgive a child who is afraid of the dark; the real tragedy of life is when men are afraid of the light. -Plato",
 			"Teach thy tongue to say, \"I do not know,\" and thous shalt progress. -Maimonides",
 			"Start where you are. Use what you have.  Do what you can. -Arthur Ashe",
-			"When I was 5 years old, my mother always told me that happiness was the key to life.  When I went to school, they asked me what I wanted to be when I grew up.  I wrote down ‘happy'.  They told me I didn't understand the assignment, and I told them they didn't understand life. -John Lennon",
+			"When I was 5 years old, my mother always told me that happiness was the key to life.  When I went to school, they asked me what I wanted to be when I grew up.  I wrote down 'happy'.  They told me I didn't understand the assignment, and I told them they didn't understand life. -John Lennon",
 			"Fall seven times and stand up eight. -Japanese Proverb",
 			"When one door of happiness closes, another opens, but often we look so long at the closed door that we do not see the one that has been opened for us. -Helen Keller",
 			"Everything has beauty, but not everyone can see. -Confucius",

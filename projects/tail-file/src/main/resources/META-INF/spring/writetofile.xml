@@ -3,19 +3,21 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:int="http://www.springframework.org/schema/integration"
 	   xmlns:int-file="http://www.springframework.org/schema/integration/file"
-	   xmlns:task="http://www.springframework.org/schema/task"
 	   xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
 
-	<int:channel id="toTopicChannel"/>
+	<int:channel id="toFileChannel"/>
 
-	<int-file:tail-inbound-channel-adapter id="fileInboundChannelAdapter"
-					channel="toTopicChannel"
-					file="#{systemProperties['java.io.tmpdir']}/quotes.txt"
-					delay="2000"
-					file-delay="10000"/>
+	<int:inbound-channel-adapter ref="randomQuoteGenerator" method="generateQuote" channel="toFileChannel">
+		<int:poller fixed-delay="2000"/>
+	</int:inbound-channel-adapter>
 
-	<int:outbound-channel-adapter ref="fileContentRecordingService" method="sendLinesToTopic" channel="toTopicChannel"/>
+	<int:chain input-channel="toFileChannel">
+		<int:header-enricher>
+			<int:header name="file_name" value="quotes.txt"/>
+		</int:header-enricher>
+		<int-file:outbound-channel-adapter directory="#{systemProperties['java.io.tmpdir']}" mode="APPEND" />
+	</int:chain>
+
 </beans>
