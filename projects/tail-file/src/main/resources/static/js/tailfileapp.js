@@ -36,8 +36,6 @@ var tailFilesApp = angular.module("tailFilesApp",[]);
 
 tailFilesApp.controller("TailFilesCtrl", function ($scope) {
     function init() {
-        $scope.statusmessage = "";
-        $scope.errormessage = '';
         $scope.buffer = new CircularBuffer(20);
     }
 
@@ -49,16 +47,6 @@ tailFilesApp.controller("TailFilesCtrl", function ($scope) {
             $scope.socket.stomp.subscribe(URLS.tailFilesTopic, $scope.notify);
         });
         $scope.socket.client.onclose = $scope.reconnect;
-    };
-
-    $scope.setErrorMessage = function (message) {
-        $scope.errormessage = message;
-        $scope.statusmessage = '';
-    };
-
-    $scope.setStatusMessage = function (message) {
-        $scope.statusmessage = message;
-        $scope.errormessage = '';
     };
 
     $scope.notify = function(message) {

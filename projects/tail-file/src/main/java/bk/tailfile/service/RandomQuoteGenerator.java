@@ -2,14 +2,17 @@ package bk.tailfile.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Service
 public class RandomQuoteGenerator {
 	public String generateQuote() {
-		int len = QUOTES.length;
-		return QUOTES[(int)(Math.random() * len)] + "\n";
+		int len = QUOTES.size();
+		return QUOTES.get((int)(Math.random() * len)) + "\n";
 	}
 
-	private final String [] QUOTES = {
+	private final List<String> QUOTES = Arrays.asList(new String[]{
 			"Life isn't about getting and having, it's about giving and being. -Kevin Kruse",
 			"Whatever the mind of man can conceive and believe, it can achieve. -Napoleon Hill",
 			"Strive not to be a success, but rather to be of value. -Albert Einstein",
@@ -112,5 +115,5 @@ public class RandomQuoteGenerator {
 			"Nothing is impossible, the word itself says, \"I'm possible!\" -Audrey Hepburn",
 			"The only way to do great work is to love what you do. -Steve Jobs",
 			"If you can dream it, you can achieve it. -Zig Ziglar",
-	};
+	});
 }
