@@ -43,10 +43,10 @@ app.controller("ChatCtrl", function ($scope) {
 
     $scope.initSockets = function() {
         $scope.socket={};
-        $scope.socket.client = new SockJS('/chat');
+        $scope.socket.client = new SockJS(URLS.chatWSEndpoint);
         $scope.socket.stomp = Stomp.over($scope.socket.client);
         $scope.socket.stomp.connect({}, function() {
-            $scope.socket.stomp.subscribe("/user/queue/chats", $scope.notify);
+            $scope.socket.stomp.subscribe(URLS.userChats, $scope.notify);
         });
         $scope.socket.client.onclose = $scope.reconnect;
     };
@@ -72,7 +72,7 @@ app.controller("ChatCtrl", function ($scope) {
     };
 
     $scope.submitGreeting = function(chatmessage) {
-        $scope.socket.stomp.send("/app/chats", {}, angular.toJson(chatmessage));
+        $scope.socket.stomp.send(URLS.appChats, {}, angular.toJson(chatmessage));
     }
 
     init();
