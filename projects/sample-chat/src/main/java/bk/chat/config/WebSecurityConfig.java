@@ -16,10 +16,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.csrf().disable()
 			.authorizeRequests()
-				.antMatchers("/css/**").permitAll()
 				.antMatchers("/img/**").permitAll()
+				.antMatchers("/css/**").permitAll()
 				.antMatchers("/js/**").permitAll()
 				.antMatchers("/webjars/**").permitAll()
+				.antMatchers("/chat/info**").permitAll()
+				.antMatchers("/chat**").permitAll()
 				.anyRequest().authenticated()
 				.and()
 			.logout()

@@ -32,13 +32,43 @@ CircularBuffer.prototype.getArr = function() {
     return this.arr;
 };
 
-var app = angular.module("chatApp",[]);
+var app = angular.module("chatApp",["ui.router"]);
 
-app.controller("ChatCtrl", function ($scope) {
+app.config(function ($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise("selectRoom");
+
+    $stateProvider
+        .state('selectRoom', {
+            url:'/selectRoom',
+            templateUrl: URLS.partialsRooms,
+            controller: 'ChatRoomCtrl'
+        }).state('chats', {
+            url:'/chats/:chatRoomId',
+            templateUrl: URLS.partialsChats,
+            controller: 'ChatCtrl'
+        });
+});
+
+app.controller("ChatRoomCtrl", function ($scope, $state) {
     function init() {
         $scope.statusmessage = "";
         $scope.errormessage = '';
-        $scope.buffer = new CircularBuffer(20);
+    }
+
+    $scope.joinRoom = function() {
+        $state.go("chats", {"chatRoomId": $scope.roomName});
+    };
+
+    init();
+});
+
+app.controller("ChatCtrl", function ($rootScope, $scope, $stateParams) {
+    function init() {
+        $scope.statusmessage = "";
+        $scope.errormessage = '';
+        $scope.buffer = new CircularBuffer(50);
+        $scope.chatRoomId = $stateParams.chatRoomId;
+        $rootScope.chatRoomId = $scope.chatRoomId;
     }
 
     $scope.initSockets = function() {
@@ -46,7 +76,7 @@ app.controller("ChatCtrl", function ($scope) {
         $scope.socket.client = new SockJS(URLS.chatWSEndpoint);
         $scope.socket.stomp = Stomp.over($scope.socket.client);
         $scope.socket.stomp.connect({}, function() {
-            $scope.socket.stomp.subscribe(URLS.userChats, $scope.notify);
+            $scope.socket.stomp.subscribe("/topic/chats." + $scope.chatRoomId, $scope.notify);
         });
         $scope.socket.client.onclose = $scope.reconnect;
     };
@@ -63,16 +93,17 @@ app.controller("ChatCtrl", function ($scope) {
 
     $scope.notify = function(message) {
         $scope.$apply(function() {
-            $scope.buffer.add(angular.fromJson(message.body));
+            $scope.buffer.add(message.body);
         });
     };
 
     $scope.reconnect = function() {
+        console.log("Connection gone!!");
         setTimeout($scope.initSockets, 10000);
     };
 
     $scope.submitGreeting = function(chatmessage) {
-        $scope.socket.stomp.send(URLS.appChats, {}, angular.toJson(chatmessage));
+        $scope.socket.stomp.send("/app/chats/" + $scope.chatRoomId, {}, angular.toJson(chatmessage));
     }
 
     init();

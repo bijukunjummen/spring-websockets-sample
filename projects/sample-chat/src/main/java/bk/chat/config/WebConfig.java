@@ -13,6 +13,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("/login").setViewName("login/login");
+		registry.addViewController("/partialsChats").setViewName("chat/partialsChats");
+		registry.addViewController("/partialsRooms").setViewName("chat/partialsRooms");
 	}
 
 }

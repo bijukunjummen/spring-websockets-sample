@@ -1,6 +1,10 @@
 package bk.chat.config;
 
+import bk.chat.web.HttpSessionIdHandshakeInterceptor;
+import bk.chat.web.SessionKeepAliveChannelInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -12,13 +16,23 @@ public class WebSocketDefaultConfig extends AbstractWebSocketMessageBrokerConfig
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		//    config.enableStompBrokerRelay("/queue", "/topic/");
-		config.enableSimpleBroker("/topic/", "/queue/");
+		config.enableStompBrokerRelay("/queue", "/topic/");
+		//config.enableSimpleBroker("/topic/", "/queue/");
 		config.setApplicationDestinationPrefixes("/app");
 	}
 
 	@Override
+	public void configureClientInboundChannel(ChannelRegistration registration) {
+		registration.setInterceptors(sessionKeepAliveChannelInterceptor());
+	}
+
+	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/chat").withSockJS();
+		registry.addEndpoint("/chat").withSockJS().setInterceptors(new HttpSessionIdHandshakeInterceptor());
+	}
+
+	@Bean
+	public SessionKeepAliveChannelInterceptor sessionKeepAliveChannelInterceptor() {
+		return new SessionKeepAliveChannelInterceptor();
 	}
 }
