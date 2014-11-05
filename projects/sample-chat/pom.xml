@@ -100,6 +100,11 @@
 			<artifactId>spring-websocket</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-websocket</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
 		</dependency>
@@ -143,7 +148,7 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
@@ -151,7 +156,7 @@
 						-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005
 					</jvmArguments>
 				</configuration>
-			</plugin>
+			</plugin-->
 		</plugins>
 	</build>
 	<repositories>
