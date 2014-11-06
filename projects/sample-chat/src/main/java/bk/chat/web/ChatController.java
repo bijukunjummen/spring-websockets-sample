@@ -5,6 +5,7 @@ import com.google.common.collect.EvictingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -33,7 +34,8 @@ public class ChatController {
 	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@MessageMapping("/chats/{chatRoomId}")
-	public void handleChat(@Payload ChatMessage message, @DestinationVariable("chatRoomId") String chatRoomId, Principal user) {
+	public void handleChat(@Payload ChatMessage message, @DestinationVariable("chatRoomId") String chatRoomId, MessageHeaders messageHeaders, Principal user) {
+		logger.info(messageHeaders.toString());
 		this.simpMessagingTemplate.convertAndSend("/topic/chats." + chatRoomId, "[" + getTimestamp() + "]:" + user.getName() + ":" + message.getMessage());
 	}
 

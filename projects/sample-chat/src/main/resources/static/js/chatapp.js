@@ -73,7 +73,7 @@ app.controller("ChatCtrl", function ($rootScope, $scope, $stateParams) {
 
     $scope.initSockets = function() {
         $scope.socket={};
-        $scope.socket.client = new SockJS(URLS.chatWSEndpoint);
+        $scope.socket.client = new SockJS(URLS.chatWSEndpoint);//new WebSocket('ws://' + window.location.host + URLS.chatWSEndpoint);//;
         $scope.socket.stomp = Stomp.over($scope.socket.client);
         $scope.socket.stomp.connect({}, function() {
             $scope.socket.stomp.subscribe("/topic/chats." + $scope.chatRoomId, $scope.notify);

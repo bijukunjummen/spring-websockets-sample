@@ -28,7 +28,12 @@ public class WebSocketDefaultConfig extends AbstractWebSocketMessageBrokerConfig
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/chat").withSockJS().setInterceptors(new HttpSessionIdHandshakeInterceptor());
+		registry.addEndpoint("/chat").withSockJS().setInterceptors(httpSessionIdHandshakeInterceptor());
+	}
+
+	@Bean
+	public HttpSessionIdHandshakeInterceptor httpSessionIdHandshakeInterceptor() {
+		return new HttpSessionIdHandshakeInterceptor();
 	}
 
 	@Bean
